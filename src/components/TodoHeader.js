@@ -15,23 +15,25 @@ export default props => (
     </div>
 );
 
+
 const styles = StyleSheet.create({
     container: {
         marginTop: '8px',
         marginDown: '8px'
     },
     header: {
+        fontFamity: 'monospace',
         fontSize: 22
     },
     p: {
         fontSize: 14
     },
     statusOnline: {
-        background: '#00818a',
+        backgroundColor: '#00818a',
         color: '#74dac6'
     },
     statusOffline: {
-        background: '#be3030',
+        backgroundColor: '#be3030',
         color: '#ff9393'
 
     }

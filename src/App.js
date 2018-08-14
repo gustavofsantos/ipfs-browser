@@ -11,9 +11,7 @@ class App extends Component {
     this.state = {
       texto: '',
       ipfsState: 'offline',
-      hashes: localStorage.getItem('hashes') ? 
-        JSON.parse(localStorage.getItem('hashes')) : []
-     };
+      hashes: localStorage.getItem('hashes') ? JSON.parse(localStorage.getItem('hashes')) : [] };
 
     this.ipfs = new window.Ipfs();
     this.ipfs.once('ready', () => {
@@ -83,14 +81,14 @@ class App extends Component {
     return (
       <div className={css(styles.app)}>
         <div className={css(styles.container)}>
-          <TodoHeader 
+          <TodoHeader
             status={this.state.ipfsState} />
 
-          {/* <TodoNew handleTextChange={this.handleTextChange}
+          <TodoNew handleTextChange={this.handleTextChange}
             handleTextSubmit={this.handleTextSubmit}
-            texto={this.state.texto} /> */}
+            texto={this.state.texto} />
 
-          <TodoImport 
+          <TodoImport
             handleImportHash={this.handleImportHash} />
 
           <TodoList items={this.state.hashes} />
@@ -104,15 +102,15 @@ export default App;
 
 const RobotoMonoFont = {
   fontFamily: "Roboto Mono",
-  fontStyle: "monospace",
+  fontStyle: "normal",
   fontWeight: "normal",
   src: "url('https://fonts.googleapis.com/css?family=Roboto+Mono')"
 };
 
 const styles = StyleSheet.create({
   app: {
-    background: '#13334c',
-    color: '#f6f6e9',
+    background: '#FFF',
+    color: '#1A1A1A',
     textAlign: 'center',
     fontFamity: RobotoMonoFont,
     width: '100%',
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
   },
   container: {
     display: 'inline-block',
-    maxWidth: '30rem',
+    maxWidth: '60rem',
     width: '100%'
   }
 });
