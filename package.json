@@ -2,6 +2,7 @@
   "name": "js-ipfs-test",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://gustavofsantos.github.io/ipfs-browser/",
   "dependencies": {
     "aphrodite": "^2.2.2",
     "dat-js": "^6.2.0",
