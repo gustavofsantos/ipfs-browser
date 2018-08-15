@@ -5,9 +5,9 @@ export default props => (
     <div className={css(styles.container)}>
         <header className={css(styles.header)}>Todo App</header>
         <p className={css(styles.p)}>
-            IPFS 
-            <span 
-                className={props.status === 'online' ? 
+            IPFS
+            <span
+                className={props.status === 'online' ?
                     css(styles.statusOnline) : css(styles.statusOffline)}>
                 {props.status}
             </span>
@@ -30,11 +30,12 @@ const styles = StyleSheet.create({
     },
     statusOnline: {
         backgroundColor: '#00818a',
-        color: '#74dac6'
+        color: '#74dac6',
+        paddingLeft: '0.1rem'
     },
     statusOffline: {
         backgroundColor: '#be3030',
-        color: '#ff9393'
-
+        color: '#ff9393',
+        paddingLeft: '0.1rem'
     }
 })

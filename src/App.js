@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, css } from 'aphrodite';
+
 import TodoList from './components/TodoList';
 import TodoNew from './components/TodoNew';
 import TodoHeader from './components/TodoHeader';
@@ -15,18 +16,8 @@ class App extends Component {
       hashes: []
     };
 
-    this.ipfs = new window.Ipfs(/* {
-      config: {
-        Addresses: {
-          Swarm: [
-            "/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star"
-          ]
-        }
-      }
-    } */);
-    this.ipfs.once('ready', () => {
-      this.setState({ ipfsState: 'online' });
-    })
+    // uses IPFS Companion
+    this.ipfs = window.ipfs || new window.Ipfs();
 
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleTextSubmit = this.handleTextSubmit.bind(this);
@@ -44,7 +35,7 @@ class App extends Component {
   addToIpfs(texto) {
     const _this = this;
     return new Promise((resolve, reject) => {
-      _this.ipfs.files.add(_this.ipfs.types.Buffer.from(texto), (e, files) => {
+      _this.ipfs.files.add(Buffer.from(texto), (e, files) => {
         if (e) {
           reject(e);
         } else {
@@ -56,31 +47,31 @@ class App extends Component {
   }
 
   getFromIpfs(hash) {
-    const _this = this;
-    return new Promise((resolve, reject) => {
+    return new Promise((_this => (resolve, reject) => {
       _this.ipfs.files.get(hash, (e, files) => {
         if (e) reject(e);
         else resolve(files[0].content.toString('utf8'));
       });
-    });
+    })(this));
   }
 
   handleImportHashTextChange(ev) {
     console.log('handleImportHashTextChange');
     this.setState({ importHash: ev.target.value });
   }
-  
+
   async handleImportHash(ev) {
     ev.preventDefault();
 
     const hash = this.state.importHash;
-    console.log(`handleImportHash hash: ${hash}`);
-    const content = hash ? await this.getFromIpfs(hash) : undefined;
-    console.log(`handleImportHash hash: ${hash}, content: ${content}`);
-    if (content)
-      this.setState({ 
-        hashes: [...this.state.hashes, { text: content, hash }]
-      });
+    if (hash) {
+      const content = await this.getFromIpfs(hash);
+      if (content)
+        this.setState({
+          hashes: [...this.state.hashes, { text: content, hash }],
+          importHash: ''
+        });
+    }
   }
 
   handleTextChange(ev) {
@@ -95,6 +86,14 @@ class App extends Component {
 
     this.setState({ texto : '', hashes: [...this.state.hashes, { text, hash } ] });
     localStorage.setItem('hashes', JSON.stringify(this.state.hashes));
+  }
+
+  componentDidMount() {
+    if (this.ipfs) {
+      this.setState({ ipfsState: 'online' });
+    } else {
+      alert('You should install IPFS Companion extension.');
+    }
   }
 
   render() {
