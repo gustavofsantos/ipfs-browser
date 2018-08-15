@@ -11,9 +11,19 @@ class App extends Component {
     this.state = {
       texto: '',
       ipfsState: 'offline',
-      hashes: localStorage.getItem('hashes') ? JSON.parse(localStorage.getItem('hashes')) : [] };
+      importHash: '',
+      hashes: []
+    };
 
-    this.ipfs = new window.Ipfs();
+    this.ipfs = new window.Ipfs(/* {
+      config: {
+        Addresses: {
+          Swarm: [
+            "/ip4/127.0.0.1/tcp/9090/ws/p2p-webrtc-star"
+          ]
+        }
+      }
+    } */);
     this.ipfs.once('ready', () => {
       this.setState({ ipfsState: 'online' });
     })
@@ -21,11 +31,10 @@ class App extends Component {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleTextSubmit = this.handleTextSubmit.bind(this);
     this.handleImportHash = this.handleImportHash.bind(this);
+    this.handleImportHashTextChange = this.handleImportHashTextChange.bind(this);
     this.getText = this.getText.bind(this);
     this.addToIpfs = this.addToIpfs.bind(this);
-
     this.getFromIpfs = this.getFromIpfs.bind(this);
-
   }
 
   getText() {
@@ -56,11 +65,22 @@ class App extends Component {
     });
   }
 
+  handleImportHashTextChange(ev) {
+    console.log('handleImportHashTextChange');
+    this.setState({ importHash: ev.target.value });
+  }
+  
   async handleImportHash(ev) {
-    const hash = ev.target.value;
-    const content = await this.getFromIpfs(hash);
+    ev.preventDefault();
+
+    const hash = this.state.importHash;
+    console.log(`handleImportHash hash: ${hash}`);
+    const content = hash ? await this.getFromIpfs(hash) : undefined;
     console.log(`handleImportHash hash: ${hash}, content: ${content}`);
-    this.setState({ hashes: [...this.state.hashes, { text: content, hash }]});
+    if (content)
+      this.setState({ 
+        hashes: [...this.state.hashes, { text: content, hash }]
+      });
   }
 
   handleTextChange(ev) {
@@ -89,7 +109,8 @@ class App extends Component {
             texto={this.state.texto} />
 
           <TodoImport
-            handleImportHash={this.handleImportHash} />
+            handleImportHash={this.handleImportHash}
+            handleImportHashTextChange={this.handleImportHashTextChange} />
 
           <TodoList items={this.state.hashes} />
         </div>
@@ -118,7 +139,7 @@ const styles = StyleSheet.create({
   },
   container: {
     display: 'inline-block',
-    maxWidth: '60rem',
+    maxWidth: '30rem',
     width: '100%'
   }
 });

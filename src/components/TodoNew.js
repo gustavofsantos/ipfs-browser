@@ -4,12 +4,12 @@ import { StyleSheet, css } from 'aphrodite';
 export default props => (
     <form
         onSubmit={props.handleTextSubmit}>
-        <div className="row">
+        <div>
             <input
                 className={css(styles.inputText)}
                 type="text" value={props.texto} onChange={props.handleTextChange} />
         </div>
-        <div className="row">
+        <div>
             <input
                 className={css(styles.inputButton)}
                 type="submit" value="Adicionar" />
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         background: '#FFF',
         borderRadius: '0.2rem',
         boxShadow: '0px 4px 29px -5px rgba(0,0,0,0.75)',
-        maxWidth: '32rem',
+        maxWidth: '24rem',
         width: '100%',
         marginDown: '1rem',
         marginTop: '1rem',
@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
         boxShadow: '0px 4px 29px -5px rgba(0,0,0,0.75)',
         padding: '1rem',
         marginLeft: '0.5rem',
+        marginRight: '0.5rem',
+        marginTop: '0.5rem',
         borderStyle: 'none',
         borderRadius: '0.5rem'
     }
