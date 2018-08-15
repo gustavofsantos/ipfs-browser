@@ -3,11 +3,10 @@ import { StyleSheet, css } from 'aphrodite';
 
 export default props => (
     <form 
-        className={css(styles.form)}
         onSubmit={props.handleImportHash}>
         <input 
             className={css(styles.inputText)}
-            type="text" />
+            type="text" onChange={props.handleImportHashTextChange} />
         <input 
             className={css(styles.inputButton)} 
             type="submit" value="Importar" />
@@ -18,7 +17,7 @@ const styles = StyleSheet.create({
     form: {
         display: 'inline-block',
         flex: '0 0 100%',
-        background: '#005792',
+        background: '#FFF',
         borderRadius: '0.2rem',
         boxShadow: '0px 4px 29px -5px rgba(0,0,0,0.75)',
         maxWidth: '24rem',
@@ -28,15 +27,22 @@ const styles = StyleSheet.create({
         padding: '1rem'
     },
     inputText: {
-        background: '#f6f6e9',
-        color: '#13334c',
+        background: '#F0F0F0',
+        color: '#1A1A1A',
+        width: '90%',
         padding: '1rem',
-        borderStyle: 'none'
+        borderStyle: 'none',
+        borderRadius: '0.5rem'
     },
     inputButton: {
-        background: '#fd5f00',
-        color: '#f6f6e9',
+        background: '#1A1A1A',
+        color: '#F0F0F0',
+        boxShadow: '0px 4px 29px -5px rgba(0,0,0,0.75)',
         padding: '1rem',
-        borderStyle: 'none'
+        marginLeft: '0.5rem',
+        marginRight: '0.5rem',
+        marginTop: '0.5rem',
+        borderStyle: 'none',
+        borderRadius: '0.5rem'
     }
 })

@@ -2,6 +2,6 @@ import React from 'react';
 
 export default props => (
     <div>
-        <p>To-do list is empty, add one</p>
+        <h2>To-do list is empty, add one</h2>
     </div>
 );
