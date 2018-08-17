@@ -6,26 +6,68 @@ import TodoNew from './components/TodoNew';
 import TodoHeader from './components/TodoHeader';
 import TodoImport from './components/TodoImport';
 
+import './App.css';
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       texto: '',
       ipfsState: 'offline',
+      placeholder: 'aguardando...',
       importHash: '',
+      isImportHidden: true,
       hashes: []
     };
 
-    // uses IPFS Companion
+    // uses IPFS Companion or Ipfs object that comes from script
     this.ipfs = window.ipfs || new window.Ipfs();
 
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleTextSubmit = this.handleTextSubmit.bind(this);
     this.handleImportHash = this.handleImportHash.bind(this);
     this.handleImportHashTextChange = this.handleImportHashTextChange.bind(this);
+    this.importButtonHandler = this.importButtonHandler.bind(this);
     this.getText = this.getText.bind(this);
     this.addToIpfs = this.addToIpfs.bind(this);
     this.getFromIpfs = this.getFromIpfs.bind(this);
+    this.importHashes = this.importHashes.bind(this);
+    this.storeHashes = this.storeHashes.bind(this);
+  }
+
+  importHashes() {
+    const hashes = localStorage.getItem('hashes') ? localStorage.getItem('hashes').split(',') : null;
+
+    if (hashes) {
+      (_this => new Promise(() => {
+        if (_this.ipfs.on) {
+          _this.ipfs.on('ready', () => {
+            hashes.forEach(hash => {
+              _this.ipfs.files.get(hash, (e, files) => {
+                if (!e) {
+                  const content = files[0].content.toString('utf8');
+                  this.setState({ hashes: [ ...this.state.hashes, { text: content, hash }] });
+                }
+              });
+            });
+          });
+        } else {
+          hashes.forEach(hash => {
+            _this.ipfs.files.get(hash, (e, files) => {
+              if (!e) {
+                const content = files[0].content.toString('utf8');
+                this.setState({ hashes: [ ...this.state.hashes, { text: content, hash }] });
+              }
+            });
+          });
+        }
+      }))(this);
+    }
+  }
+
+  storeHashes() {
+    const hashes = this.state.hashes.reduce((prev, curr) => [ ...prev, curr.hash], [])
+    localStorage.setItem('hashes', hashes);
   }
 
   getText() {
@@ -55,8 +97,11 @@ class App extends Component {
     })(this));
   }
 
+  importButtonHandler(ev) {
+    this.setState({ isImportHidden: false });
+  }
+
   handleImportHashTextChange(ev) {
-    console.log('handleImportHashTextChange');
     this.setState({ importHash: ev.target.value });
   }
 
@@ -64,13 +109,17 @@ class App extends Component {
     ev.preventDefault();
 
     const hash = this.state.importHash;
+    console.log('handleImportHash hash:', hash);
     if (hash) {
       const content = await this.getFromIpfs(hash);
+      console.log('content: ', content, 'hash: ', hash);
       if (content)
         this.setState({
           hashes: [...this.state.hashes, { text: content, hash }],
-          importHash: ''
+          importHash: '',
+          isImportHidden: true
         });
+        this.storeHashes();
     }
   }
 
@@ -85,12 +134,20 @@ class App extends Component {
     const hash = await this.addToIpfs(text);
 
     this.setState({ texto : '', hashes: [...this.state.hashes, { text, hash } ] });
-    localStorage.setItem('hashes', JSON.stringify(this.state.hashes));
+    this.storeHashes();
   }
 
   componentDidMount() {
     if (this.ipfs) {
-      this.setState({ ipfsState: 'online' });
+      if (this.ipfs.on) {
+        this.ipfs.once('ready', () => {
+          this.setState({ ipfsState: 'online', placeholder: null });
+          this.importHashes();
+        });
+      } else {
+        this.setState({ ipfsState: 'online', placeholder: null });
+        this.importHashes();
+      }
     } else {
       alert('You should install IPFS Companion extension.');
     }
@@ -98,21 +155,29 @@ class App extends Component {
 
   render() {
     return (
-      <div className={css(styles.app)}>
-        <TodoHeader
-              status={this.state.ipfsState} />
-        
-        <div className={css(styles.container)}>
-          <TodoNew handleTextChange={this.handleTextChange}
-            handleTextSubmit={this.handleTextSubmit}
-            texto={this.state.texto} />
+      <div className="App">
+        <div className={css(styles.app)}>
+          <TodoHeader
+            importButtonHandler={this.importButtonHandler}
+            status={this.state.ipfsState} />
+          
+          <div className={css(styles.container)}>
+            <TodoNew 
+              isNewDisabled={this.state.ipfsState === 'offline' ? true : false}
+              handleTextChange={this.handleTextChange}
+              handleTextSubmit={this.handleTextSubmit}
+              texto={this.state.texto}
+              placeholder={this.state.placeholder} />
 
-          <TodoImport
-            handleImportHash={this.handleImportHash}
-            isImportHidden={true}
-            handleImportHashTextChange={this.handleImportHashTextChange} />
+            <TodoImport
+              isImportHidden={this.state.isImportHidden}
+              isImportDisabled={this.state.ipfsState === 'offline' ? true : false}
+              handleImportHash={this.handleImportHash}
+              handleImportHashTextChange={this.handleImportHashTextChange}
+              placeholder={this.state.placeholder} />
 
-          <TodoList items={this.state.hashes} />
+            <TodoList items={this.state.hashes} />
+          </div>
         </div>
       </div>
     );
@@ -121,25 +186,17 @@ class App extends Component {
 
 export default App;
 
-const RobotoMonoFont = {
-  fontFamily: "Roboto Mono",
-  fontStyle: "normal",
-  fontWeight: "normal",
-  src: "url('..\\res\\fonts\\RobotoMono-Regular.ttf') format('ttf')"
-};
-
 const styles = StyleSheet.create({
   app: {
     background: '#EAEAEA',
     color: '#1A1A1A',
     textAlign: 'center',
-    fontFamity: RobotoMonoFont,
     width: '100vw',
     height: '100vh'
   },
   container: {
     display: 'inline-block',
     maxWidth: '30rem',
-    width: '100%'
+    width: '100vw'
   }
 });

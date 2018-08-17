@@ -7,10 +7,11 @@ export default props => (
         onSubmit={props.handleTextSubmit}>
         <div>
             <input
+                disabled={props.isNewDisabled}
                 className={css(styles.inputText)}
                 type="text" value={props.texto} 
                 onChange={props.handleTextChange}
-                placeholder="adicione uma nota e pressione enter" />
+                placeholder={props.placeholder ? props.placeholder : "adicione uma nota e pressione enter"} />
         </div>
     </form>
 )
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
         background: '#FFF',
         borderRadius: '0.2rem',
         maxWidth: '24rem',
-        width: '100vw',
+        width: '100%',
         marginDown: '1rem',
         marginTop: '1rem',
         marginLeft: '0.5rem',
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     inputText: {
         background: '#F0F0F0',
         color: '#1A1A1A',
-        width: '90%',
+        width: '100%',
         padding: '1rem',
         borderStyle: 'none',
         borderRadius: '0.5rem'

@@ -7,15 +7,16 @@ export default props => (
             <div className={css(styles.leftSide)}>
                 <header className={css(styles.header)}>Todo App</header>
             </div>
-            {/* <div className={css(styles.rightSide)}>
-                <p className={css(styles.p)}>
+            <div className={css(styles.rightSide)}>
+                <button onClick={props.importButtonHandler}>importar</button>
+                {/* <p className={css(styles.p)}>
                     IPFS
                     <span
                         className={props.status === 'online' ?
                             css(styles.statusOnline) : css(styles.statusOffline)}>
                     </span>
-                </p>
-            </div> */}
+                </p> */}
+            </div>
         </div>
     </div>
 );
@@ -48,8 +49,6 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: 'stretch',
-        color: '#3b0944',
-        fontFamity: 'arial',
         fontSize: 22,
         padding: '0.8rem'
     },

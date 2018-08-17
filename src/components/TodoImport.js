@@ -12,7 +12,7 @@ export default props => {
                 <input 
                     className={css(styles.inputText)}
                     type="text"
-                    placeholder="cole uma hash e pressione enter"
+                    placeholder={props.placeholder ? props.placeholder : "cole uma hash e pressione enter"}
                     onChange={props.handleImportHashTextChange} />
             </form>
         );
