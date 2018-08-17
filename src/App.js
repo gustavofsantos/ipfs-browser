@@ -99,16 +99,17 @@ class App extends Component {
   render() {
     return (
       <div className={css(styles.app)}>
+        <TodoHeader
+              status={this.state.ipfsState} />
+        
         <div className={css(styles.container)}>
-          <TodoHeader
-            status={this.state.ipfsState} />
-
           <TodoNew handleTextChange={this.handleTextChange}
             handleTextSubmit={this.handleTextSubmit}
             texto={this.state.texto} />
 
           <TodoImport
             handleImportHash={this.handleImportHash}
+            isImportHidden={true}
             handleImportHashTextChange={this.handleImportHashTextChange} />
 
           <TodoList items={this.state.hashes} />
@@ -124,17 +125,17 @@ const RobotoMonoFont = {
   fontFamily: "Roboto Mono",
   fontStyle: "normal",
   fontWeight: "normal",
-  src: "url('https://fonts.googleapis.com/css?family=Roboto+Mono')"
+  src: "url('..\\res\\fonts\\RobotoMono-Regular.ttf') format('ttf')"
 };
 
 const styles = StyleSheet.create({
   app: {
-    background: '#FFF',
+    background: '#EAEAEA',
     color: '#1A1A1A',
     textAlign: 'center',
     fontFamity: RobotoMonoFont,
-    width: '100%',
-    height: '100%'
+    width: '100vw',
+    height: '100vh'
   },
   container: {
     display: 'inline-block',

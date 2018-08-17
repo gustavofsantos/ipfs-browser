@@ -3,16 +3,14 @@ import { StyleSheet, css } from 'aphrodite';
 
 export default props => (
     <form
+        className={css(styles.form)}
         onSubmit={props.handleTextSubmit}>
         <div>
             <input
                 className={css(styles.inputText)}
-                type="text" value={props.texto} onChange={props.handleTextChange} />
-        </div>
-        <div>
-            <input
-                className={css(styles.inputButton)}
-                type="submit" value="Adicionar" />
+                type="text" value={props.texto} 
+                onChange={props.handleTextChange}
+                placeholder="adicione uma nota e pressione enter" />
         </div>
     </form>
 )
@@ -23,11 +21,12 @@ const styles = StyleSheet.create({
         flex: '0 0 100%',
         background: '#FFF',
         borderRadius: '0.2rem',
-        boxShadow: '0px 4px 29px -5px rgba(0,0,0,0.75)',
         maxWidth: '24rem',
-        width: '100%',
+        width: '100vw',
         marginDown: '1rem',
         marginTop: '1rem',
+        marginLeft: '0.5rem',
+        marginRight: '0.5rem',
         padding: '1rem'
     },
     inputText: {

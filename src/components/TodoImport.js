@@ -1,17 +1,23 @@
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-export default props => (
-    <form 
-        onSubmit={props.handleImportHash}>
-        <input 
-            className={css(styles.inputText)}
-            type="text" onChange={props.handleImportHashTextChange} />
-        <input 
-            className={css(styles.inputButton)} 
-            type="submit" value="Importar" />
-    </form>
-)
+export default props => {
+    if (props.isImportHidden) {
+        return (<div></div>);
+    } else {
+        return (
+            <form 
+                className={css(styles.form)}
+                onSubmit={props.handleImportHash}>
+                <input 
+                    className={css(styles.inputText)}
+                    type="text"
+                    placeholder="cole uma hash e pressione enter"
+                    onChange={props.handleImportHashTextChange} />
+            </form>
+        );
+    }
+};
 
 const styles = StyleSheet.create({
     form: {
@@ -19,9 +25,8 @@ const styles = StyleSheet.create({
         flex: '0 0 100%',
         background: '#FFF',
         borderRadius: '0.2rem',
-        boxShadow: '0px 4px 29px -5px rgba(0,0,0,0.75)',
         maxWidth: '24rem',
-        width: '100%',
+        width: '100vw',
         marginDown: '1rem',
         marginTop: '1rem',
         padding: '1rem'
